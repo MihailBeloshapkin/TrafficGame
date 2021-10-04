@@ -72,7 +72,7 @@ public class Conv : MonoBehaviour
             //    plate.transform.localPosition += new Vector3(0, 0, (Road.Count / 2) * 5);
                 var pos = plate.transform.localPosition;// += new Vector3(0, 0, Road.Count * 5);
                 var index = Road.IndexOf(plate);
-                int newPlateNumber = UnityEngine.Random.Range(0, (isRoad.Length / 2) - 1);
+                int newPlateNumber = UnityEngine.Random.Range(0, (isRoad.Length / 2));
                 int j = 0;
                 int newIndex = 0;
                 for (int i = 0; i < Road.Count; i++) {
