@@ -12,6 +12,11 @@ public class Ball : MonoBehaviour
         
     }
 
+    private void Generation()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
