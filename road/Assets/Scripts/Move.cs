@@ -10,6 +10,9 @@ public class Move : MonoBehaviour
     private Vector3 left;
     private Vector3 forward;
     private Vector3 back;
+    private float leftBoundary;
+    private float rightBoundary;
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +21,8 @@ public class Move : MonoBehaviour
         this.left = new Vector3(-0.1F, 0, 0);
         this.forward = new Vector3(0, 0, 0.1F);
         this.back = new Vector3(0, 0, -0.1F);
+        this.leftBoundary = -2.1F;
+        this.rightBoundary = 2.1F;
     }
 
     // Update is called once per frame
@@ -25,13 +30,17 @@ public class Move : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(this.left);
-            Debug.Log("Space key was pressed.");
+            if ((transform.localPosition + left).x > leftBoundary)
+            {
+                transform.Translate(this.left);
+            }
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(this.right);
-            Debug.Log("Space key was released.");
+            if ((transform.localPosition + right).x < rightBoundary)
+            {
+                transform.Translate(this.right);
+            }
         }
         if (Input.GetKey(KeyCode.W))
         {
