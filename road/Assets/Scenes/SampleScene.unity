@@ -285,7 +285,7 @@ MonoBehaviour:
   - {fileID: 1315305152}
   isRoad: 
   platformDirection: {x: 0, y: 0, z: -0.1}
-  gaz: {x: 0, y: 0, z: -0.12}
+  gaz: {x: 0, y: 0, z: 0}
   breaks: {x: 0, y: 0, z: -0.09}
   size: 0
 --- !u!1 &528985250

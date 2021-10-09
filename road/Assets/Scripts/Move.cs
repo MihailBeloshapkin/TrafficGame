@@ -73,4 +73,12 @@ public class Move : MonoBehaviour
                 transform.Translate(forward);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "cube")
+        {
+            
+        }
+    }
 }

@@ -17,11 +17,11 @@ public class Conv : MonoBehaviour
     public bool[] isRoad;
 
     /// Direction. 
-    public Vector3 platformDirection = new Vector3(0, 5, 0);
+    public Vector3 platformDirection;
 
-    public Vector3 gaz = new Vector3(0, 10, 0);
+    public Vector3 gaz;
 
-    public Vector3 breaks = new Vector3(0, 2, 0);
+    public Vector3 breaks;
 
     public int size = 0;
 
@@ -60,7 +60,7 @@ public class Conv : MonoBehaviour
         if (Input.GetKey(KeyCode.W)) {
             Move(gaz);
         }
-        if (Input.GetKey(KeyCode.S)) {
+        else if (Input.GetKey(KeyCode.S)) {
             Move(breaks);
         }
         else
