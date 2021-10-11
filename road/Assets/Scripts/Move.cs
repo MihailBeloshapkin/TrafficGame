@@ -2,33 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script that manages car movement.
+/// </summary>
 public class Move : MonoBehaviour
-{
-    public Vector3 direction;
-    
+{   
     /// Right direction. 
+    [SerializeField]
     private Vector3 right;
 
     /// Left direction.
+    [SerializeField] 
     private Vector3 left;
 
     /// Forward direction.
+    [SerializeField] 
     private Vector3 forward;
 
     /// Back direction.
+    [SerializeField] 
     private Vector3 back;
-    
+
     /// Left boundary of the road.
+    [SerializeField] 
     private float leftBoundary;
 
     /// Right boundary of the road.
+    [SerializeField] 
     private float rightBoundary;
 
     /// First position of the car.
+    [SerializeField] 
     private Vector3 startPosition;
 
+    /// Start position property. 
+    [SerializeField] 
+    public Vector3 StartPosition { get => this.startPosition; }
 
-    // Here we set values for vectors.
+
+    /// Here we set values for vectors.
     void Start()
     {
         this.right = new Vector3(0.1F, 0, 0);
@@ -40,7 +52,7 @@ public class Move : MonoBehaviour
         this.startPosition = transform.localPosition;
     }
 
-    // Car controlling.
+    /// Car controlling.
     void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.A))
@@ -74,11 +86,16 @@ public class Move : MonoBehaviour
         }
     }
 
+    public void Detected(Body body)
+    {
+        Debug.Log("Collided");
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "cube")
+        if (collision.gameObject.name == "SimpleCube")
         {
-            
+            Debug.Log("Collision!");
         }
     }
 }
