@@ -11,6 +11,12 @@ public class Generator : MonoBehaviour
 
     public GameObject cube;
 
+    [SerializeField]
+    private GameObject[] onRoadObjectsSamples;
+
+    [SerializeField]
+    private List<GameObject> currentObjects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +25,7 @@ public class Generator : MonoBehaviour
 
     private void Generation()
     {
+        var a = Instantiate(this.onRoadObjectsSamples[0]);
     }
 
     // Update is called once per frame
