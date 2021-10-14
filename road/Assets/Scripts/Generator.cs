@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Traffic
 {
+    /// <summary>
+    /// Generates objects on the road.
+    /// </summary>
     public class Generator : MonoBehaviour
     {
         [SerializeField]
@@ -14,7 +17,7 @@ namespace Traffic
         private List<OnRoadObject> onRoadObjectsPrefabs;
 
         [SerializeField]
-        private List<GameObject> currentObjects;
+        private List<(GameObject, bool)> currentObjects;
 
         [SerializeField]
         private GameObject platPrefab;
@@ -22,15 +25,23 @@ namespace Traffic
         [SerializeField]
         private GameObject policePrefab;
 
-        private System.Object locker = new System.Object();
-
         [SerializeField]
-        private List<int> li;
+        private List<int> occupiedLines;
+
+        private List<float> zPositions;
+
+        private enum RoadObjects
+        { 
+            Police = 0, 
+            Plat = 1
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-            this.currentObjects = new List<GameObject>();
+            this.currentObjects = new List<(GameObject, bool)>();
+            this.occupiedLines = new List<int>();
+            this.zPositions = new List<float>() { -3.0F, -2.0F, -1.0F, 0.0F, 1.0F. 2.0F, 3.0F };
             StartCoroutine(TestCoroutine());
         /*    this.currentObjects = new List<GameObject>();
             var pl = Instantiate(platPrefab);
@@ -48,10 +59,19 @@ namespace Traffic
             while (true)
             {
                 yield return new WaitForSeconds(2.0F);
+                var occupied = new List<float>();
+                foreach (var (obj, isOccupied) in this.currentObjects)
+                {
+                    if (isOccupied)
+                    {
+                        occupied.Add(obj.transform.localPosition.x);
+                    }
+                }
                 var pl = Instantiate(policePrefab);
                 pl.GetComponent<OnRoadObject>().Speed = transform.parent.GetComponent<GameConfig>().Speed;
-                pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(UnityEngine.Random.Range(-3, 3), 0.3F, 20);
-                currentObjects.Add(pl);
+                var index = UnityEngine.Random.Range(0, (zPositions.Count - 1));
+                pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.3F, 20);
+                currentObjects.Add((pl, true));
                 Debug.Log(Time.deltaTime);
             }
             /*
@@ -70,17 +90,26 @@ namespace Traffic
         // Updater.
         void FixedUpdate()
         {
-            var objectsToDelete = new List<GameObject>();
-            foreach (var obj in this.currentObjects)
+            var objectsToDelete = new List<(GameObject, bool)>();
+            var isOccupiedObjectsIndexes = new List<int>();
+            foreach (var (obj, isOccupied) in this.currentObjects)
             {
+                if (obj.transform.localPosition.z > 10F || obj.transform.localPosition.z < 0.0F) 
+                {
+                    var i = this.currentObjects.IndexOf((obj, isOccupied));
+                    isOccupiedObjectsIndexes.Add(i);
+                }
                 if (Math.Abs(obj.transform.localPosition.z - obj.GetComponent<OnRoadObject>().StartPosition.z) > 100.0F)
                 {
-                    objectsToDelete.Add(obj);
+                    objectsToDelete.Add((obj, isOccupied));
                 }
             }
-            foreach (var obj in objectsToDelete)
+            foreach (var index in isOccupiedObjectsIndexes) {
+                this.currentObjects[index] = (this.currentObjects[index].Item1, false);
+            }
+            foreach (var (obj, isOccupied) in objectsToDelete)
             {
-                this.currentObjects.Remove(obj);
+                this.currentObjects.Remove((obj, isOccupied));
                 Destroy(obj);
             }
             
