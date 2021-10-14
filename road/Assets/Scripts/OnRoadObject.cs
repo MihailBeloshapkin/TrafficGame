@@ -4,21 +4,22 @@ using UnityEngine;
 
 namespace Traffic
 {
+    // Base properties for each object.
     public abstract class OnRoadObject : MonoBehaviour
     {
         // Start position of the object.
-        public abstract Vector3 StartPosition { get; }
+        public abstract Vector3 StartPosition { get; set; }
 
-        /*public abstract void CurrentPosition { get; }
-
-        private abstract float Speed { get; }
-        */
+        // Speed.
+        public abstract Vector3 Speed { get; set; }
 
         // Move.
         public abstract void Start();
         
+        // Fixed update.
         public abstract void FixedUpdate();
 
+        // Move.
         public abstract void Move();
     }
 }

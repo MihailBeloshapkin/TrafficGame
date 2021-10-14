@@ -5,30 +5,52 @@ using Traffic;
 
 namespace Traffic
 {
+    /// <summary>
+    /// Script for plat.
+    /// </summary>
     public class Plat : OnRoadObject
     {
-        public override Vector3 StartPosition { get => this.startPosition; } 
-
+        [SerializeField]
         private Vector3 startPosition;
 
         [SerializeField]
-        private Vector3 direction;
+        private Vector3 speed;
 
-
-        public override void Start()
+        public override Vector3 Speed
         {
-            this.direction = new Vector3(0, 0, -0.2F);
+            get => speed;
+            set => this.speed = value;
         }
 
-        public override void FixedUpdate() 
+        public override Vector3 StartPosition 
+        { 
+            get => this.startPosition;
+            set
+            { 
+                this.startPosition = value;
+                transform.localPosition = startPosition;
+            }
+        }
+
+        // Start.
+        public override void Start()
         {
+            this.startPosition = transform.localPosition;
+        }
+
+        // Fixed update.
+        public override void FixedUpdate() {
             Move();
         }
 
+        // Move.
         public override void Move()
         {
-            transform.Translate(this.direction);
+            if (this.speed.z > 0)
+            {
+                throw new System.ArgumentException("Z component of speed value for plat should be negative");
+            }
+            transform.Translate(this.speed);
         }
     }
-
 }

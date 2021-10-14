@@ -3,117 +3,125 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Conveer.
-/// </summary>
-public class Conv : MonoBehaviour
+
+namespace Traffic
 {
-    /// Current plates
-    public List<GameObject> Road;
-
     /// <summary>
-    /// Bool array. 
+    /// Conveer.
     /// </summary>
-    public bool[] isRoad;
-
-    /// Direction. 
-    public Vector3 platformDirection;
-
-    public Vector3 gaz;
-
-    public Vector3 breaks;
-
-    public int size = 0;
-
-    // Start is called before the first frame update
-    void Start()
+    public class Conv : MonoBehaviour
     {
-        int iter = 0;
-        int roadIndex = 0;
-        isRoad = new bool[Road.Count];
-        foreach (var plat in Road)
+        /// Current plates
+        public List<GameObject> Road;
+
+        /// <summary>
+        /// Bool array. 
+        /// </summary>
+        public bool[] isRoad;
+
+        /// Direction. 
+        public Vector3 platformDirection;
+
+        public Vector3 gaz;
+
+        public Vector3 breaks;
+
+        public int size = 0;
+
+        // Start is called before the first frame update
+        void Start()
         {
-/*            plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
-            roadIndex++;
-*/
-            if (iter % 2 == 0)
+            int iter = 0;
+            int roadIndex = 0;
+            isRoad = new bool[Road.Count];
+            foreach (var plat in Road)
             {
-                plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
-                roadIndex++;
-                isRoad[iter] = true;
+                /*            plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
+                            roadIndex++;
+                */
+                if (iter % 2 == 0)
+                {
+                    plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
+                    roadIndex++;
+                    isRoad[iter] = true;
+                }
+                else
+                {
+                    plat.transform.localPosition += new Vector3(0, -50, -50);
+                    isRoad[iter] = false;
+                }
+                iter++;
+            }
+
+        }
+
+        /// <summary>
+        /// Fixed update.
+        /// </summary>
+        void FixedUpdate()
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                Move(gaz);
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                Move(breaks);
             }
             else
             {
-                plat.transform.localPosition += new Vector3(0, -50, -50);
-                isRoad[iter] = false;
+                var currentSpeed = transform.parent.GetComponent<GameConfig>().Speed;
+                Move(currentSpeed);
             }
-            iter++;
-        }
-        
-    }
 
-    /// <summary>
-    /// Fixed update.
-    /// </summary>
-    void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.W)) {
-            Move(gaz);
+            TransformPlates();
         }
-        else if (Input.GetKey(KeyCode.S)) {
-            Move(breaks);
-        }
-        else
+
+        private int Rand(int size) => UnityEngine.Random.Range(0, size);
+
+        /// <summary>
+        /// Move plates.
+        /// </summary>
+        private void TransformPlates()
         {
-            Move(platformDirection);
-        }
 
-        TransformPlates();
-    }
-
-    private int Rand(int size) => UnityEngine.Random.Range(0, size);
-
-    /// <summary>
-    /// Move plates.
-    /// </summary>
-    private void TransformPlates()
-    {
-        
-        foreach (var plate in Road) 
-        {
-            if (isRoad[Road.IndexOf(plate)] && plate.transform.localPosition.z < Camera.main.transform.position.z - 5) 
+            foreach (var plate in Road)
             {
-            //    plate.transform.localPosition += new Vector3(0, 0, (Road.Count / 2) * 5);
-                var pos = plate.transform.localPosition;// += new Vector3(0, 0, Road.Count * 5);
-                var index = Road.IndexOf(plate);
-                int newPlateNumber = UnityEngine.Random.Range(0, (isRoad.Length / 2));
-                int j = 0;
-                int newIndex = 0;
-                for (int i = 0; i < Road.Count; i++) {
-                    if (!isRoad[i] && j == newPlateNumber)
-                        newIndex = i;
-                    if (!isRoad[i])
-                        j++;
+                if (isRoad[Road.IndexOf(plate)] && plate.transform.localPosition.z < Camera.main.transform.position.z - 5)
+                {
+                    //    plate.transform.localPosition += new Vector3(0, 0, (Road.Count / 2) * 5);
+                    var pos = plate.transform.localPosition;// += new Vector3(0, 0, Road.Count * 5);
+                    var index = Road.IndexOf(plate);
+                    int newPlateNumber = UnityEngine.Random.Range(0, (isRoad.Length / 2));
+                    int j = 0;
+                    int newIndex = 0;
+                    for (int i = 0; i < Road.Count; i++)
+                    {
+                        if (!isRoad[i] && j == newPlateNumber)
+                            newIndex = i;
+                        if (!isRoad[i])
+                            j++;
+                    }
+                    plate.transform.localPosition += new Vector3(0, -50, -50);
+                    Road[newIndex].transform.localPosition = pos + new Vector3(0, 0, (Road.Count / 2) * 5);
+                    isRoad[index] = false;
+                    isRoad[newIndex] = true;
+
                 }
-                plate.transform.localPosition += new Vector3(0, -50, -50);
-                Road[newIndex].transform.localPosition = pos + new Vector3(0, 0, (Road.Count / 2) * 5);
-                isRoad[index] = false;
-                isRoad[newIndex] = true;
-             
             }
         }
-    }
 
-    /// <summary>
-    /// Move single plate.
-    /// </summary>
-    private void Move(Vector3 currentDirection)
-    {
-        foreach (var plat in Road)
+        /// <summary>
+        /// Move single plate.
+        /// </summary>
+        private void Move(Vector3 currentDirection)
         {
-            if (isRoad[Road.IndexOf(plat)])
+            foreach (var plat in Road)
             {
-                plat.transform.localPosition += currentDirection;
+                if (isRoad[Road.IndexOf(plat)])
+                {
+                    plat.transform.localPosition += currentDirection;
+                }
             }
         }
     }
