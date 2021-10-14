@@ -19,6 +19,10 @@ public class Conv : MonoBehaviour
     /// Direction. 
     public Vector3 platformDirection = new Vector3(0, 5, 0);
 
+    public Vector3 gaz = new Vector3(0, 10, 0);
+
+    public Vector3 breaks = new Vector3(0, 2, 0);
+
     public int size = 0;
 
     // Start is called before the first frame update
@@ -53,7 +57,17 @@ public class Conv : MonoBehaviour
     /// </summary>
     void FixedUpdate()
     {
-        Move();
+        if (Input.GetKey(KeyCode.W)) {
+            Move(gaz);
+        }
+        if (Input.GetKey(KeyCode.S)) {
+            Move(breaks);
+        }
+        else
+        {
+            Move(platformDirection);
+        }
+
         TransformPlates();
     }
 
@@ -93,13 +107,13 @@ public class Conv : MonoBehaviour
     /// <summary>
     /// Move single plate.
     /// </summary>
-    private void Move()
+    private void Move(Vector3 currentDirection)
     {
         foreach (var plat in Road)
         {
             if (isRoad[Road.IndexOf(plat)])
             {
-                plat.transform.localPosition += platformDirection;
+                plat.transform.localPosition += currentDirection;
             }
         }
     }

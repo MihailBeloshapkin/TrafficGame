@@ -4,42 +4,73 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
-    public Vector3 direction = new Vector3(5, 0, 0);
+    public Vector3 direction;
     
+    /// Right direction. 
     private Vector3 right;
-    private Vector3 left;
-    private Vector3 forward;
-    private Vector3 back;
 
-    // Start is called before the first frame update
+    /// Left direction.
+    private Vector3 left;
+
+    /// Forward direction.
+    private Vector3 forward;
+
+    /// Back direction.
+    private Vector3 back;
+    
+    /// Left boundary of the road.
+    private float leftBoundary;
+
+    /// Right boundary of the road.
+    private float rightBoundary;
+
+    /// First position of the car.
+    private Vector3 startPosition;
+
+
+    // Here we set values for vectors.
     void Start()
     {
         this.right = new Vector3(0.1F, 0, 0);
         this.left = new Vector3(-0.1F, 0, 0);
-        this.forward = new Vector3(0, 0, 0.1F);
-        this.back = new Vector3(0, 0, -0.1F);
+        this.forward = new Vector3(0, 0, 0.01F);
+        this.back = new Vector3(0, 0, -0.01F);
+        this.leftBoundary = -2.1F;
+        this.rightBoundary = 2.1F;
+        this.startPosition = transform.localPosition;
     }
 
-    // Update is called once per frame
+    // Car controlling.
     void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(this.left);
-            Debug.Log("Space key was pressed.");
+            if ((transform.localPosition + left).x > leftBoundary)
+            {
+                transform.Translate(this.left);
+            }
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(this.right);
-            Debug.Log("Space key was released.");
+            if ((transform.localPosition + right).x < rightBoundary)
+            {
+                transform.Translate(this.right);
+            }
         }
         if (Input.GetKey(KeyCode.W))
         {
             transform.Translate(this.forward);
         }
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
             transform.Translate(this.back);
+        }
+        else
+        {
+            if (transform.localPosition.z > startPosition.z)
+                transform.Translate(back);
+            if (transform.localPosition.z < startPosition.z)
+                transform.Translate(forward);
         }
     }
 }
