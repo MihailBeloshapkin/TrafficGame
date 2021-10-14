@@ -81,7 +81,7 @@ public class Conv : MonoBehaviour
         
         foreach (var plate in Road) 
         {
-            if (isRoad[Road.IndexOf(plate)] && plate.transform.localPosition.z < Camera.main.transform.position.z) 
+            if (isRoad[Road.IndexOf(plate)] && plate.transform.localPosition.z < Camera.main.transform.position.z - 5) 
             {
             //    plate.transform.localPosition += new Vector3(0, 0, (Road.Count / 2) * 5);
                 var pos = plate.transform.localPosition;// += new Vector3(0, 0, Road.Count * 5);
