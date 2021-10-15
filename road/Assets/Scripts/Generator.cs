@@ -78,6 +78,7 @@ namespace Traffic
                 pl.GetComponent<OnRoadObject>().Speed = transform.parent.GetComponent<GameConfig>().Speed;
                 var index = UnityEngine.Random.Range(0, (zPositions.Count - 1));
                 pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.3F, 20);
+                pl.GetComponent<OnRoadObject>().State = transform.parent.GetComponent<GameConfig>();
                 currentObjects.Add((pl, true));
                 Debug.Log(Time.deltaTime);
             }

@@ -13,6 +13,9 @@ namespace Traffic
         // Speed.
         public abstract Vector3 Speed { get; set; }
 
+        // Current config of the game.
+        public abstract GameConfig State { get; set; }
+
         // Move.
         public abstract void Start();
         

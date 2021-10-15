@@ -16,6 +16,9 @@ namespace Traffic
         [SerializeField]
         private Vector3 speed;
 
+        [SerializeField]
+        private GameConfig state;
+
         public override Vector3 Speed
         {
             get => speed;
@@ -30,6 +33,12 @@ namespace Traffic
                 this.startPosition = value;
                 transform.localPosition = startPosition;
             }
+        }
+
+        public override GameConfig State
+        {
+            get => this.state;
+            set => this.state = value;
         }
 
         // Start.

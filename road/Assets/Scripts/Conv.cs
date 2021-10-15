@@ -60,18 +60,18 @@ namespace Traffic
         /// </summary>
         void FixedUpdate()
         {
-            var currentSpeed = transform.parent.GetComponent<GameConfig>().Speed;
+            var instantSpeed = transform.parent.GetComponent<GameConfig>().InstantSpeed;
             if (Input.GetKey(KeyCode.W))
             {
-                Move(currentSpeed * 1.1F);
+                Move(instantSpeed * 1.1F);
             }
             else if (Input.GetKey(KeyCode.S))
             {
-                Move(currentSpeed * 0.9F);
+                Move(instantSpeed * 0.9F);
             }
             else
             {
-                Move(currentSpeed);
+                Move(instantSpeed);
             }
 
             TransformPlates();
