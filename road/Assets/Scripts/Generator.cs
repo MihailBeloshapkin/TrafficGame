@@ -28,6 +28,7 @@ namespace Traffic
         [SerializeField]
         private List<int> occupiedLines;
 
+        [SerializeField]
         private List<float> zPositions;
 
         private enum RoadObjects
@@ -41,7 +42,7 @@ namespace Traffic
         {
             this.currentObjects = new List<(GameObject, bool)>();
             this.occupiedLines = new List<int>();
-            this.zPositions = new List<float>() { -3.0F, -2.0F, -1.0F, 0.0F, 1.0F. 2.0F, 3.0F };
+            this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
             StartCoroutine(TestCoroutine());
         /*    this.currentObjects = new List<GameObject>();
             var pl = Instantiate(platPrefab);
@@ -54,11 +55,17 @@ namespace Traffic
         {
         }
 
+        private float distance(Vector3 first, Vector3 second)
+        {
+            return (float)Math.Sqrt((first.x - second.x) * (first.x - second.x) + (first.y - second.y) * (first.y - second.y) + (first.z - second.z) * (first.z - second.z));
+        }
+
         IEnumerator TestCoroutine()
         {
             while (true)
             {
-                yield return new WaitForSeconds(2.0F);
+                float delta = UnityEngine.Random.Range(1.0F, 3.0F);
+                yield return new WaitForSeconds(delta);
                 var occupied = new List<float>();
                 foreach (var (obj, isOccupied) in this.currentObjects)
                 {
@@ -99,7 +106,7 @@ namespace Traffic
                     var i = this.currentObjects.IndexOf((obj, isOccupied));
                     isOccupiedObjectsIndexes.Add(i);
                 }
-                if (Math.Abs(obj.transform.localPosition.z - obj.GetComponent<OnRoadObject>().StartPosition.z) > 100.0F)
+                if (this.distance(obj.transform.localPosition, obj.GetComponent<OnRoadObject>().StartPosition) > 100.0F)
                 {
                     objectsToDelete.Add((obj, isOccupied));
                 }

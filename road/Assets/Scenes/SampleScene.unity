@@ -157,6 +157,7 @@ MonoBehaviour:
   platPrefab: {fileID: 5285452193102608432, guid: e1a664a333a2b0643bbd9d171f1e46ef, type: 3}
   policePrefab: {fileID: 3611284756571026188, guid: 9445a895504aaf443aac3c3f97c2e3c6, type: 3}
   occupiedLines: 
+  zPositions: []
 --- !u!4 &109089705
 Transform:
   m_ObjectHideFlags: 0
@@ -1207,13 +1208,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
-  m_LocalPosition: {x: 0, y: 3.6, z: -5}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 4.998, z: -3.841}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &1017962263
 GameObject:
   m_ObjectHideFlags: 0
@@ -2327,8 +2328,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.5, z: 2}
+  m_Center: {x: 0, y: 0.3, z: 0}
 --- !u!1001 &7475599346719398661
 PrefabInstance:
   m_ObjectHideFlags: 0

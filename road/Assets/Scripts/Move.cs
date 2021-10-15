@@ -97,7 +97,7 @@ namespace Traffic
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.name == "SimpleCube")
+            if (collision.gameObject.name == "PoliceCar")
             {
                 Debug.Log("Collision!");
             }

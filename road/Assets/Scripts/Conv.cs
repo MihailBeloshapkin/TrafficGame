@@ -60,17 +60,17 @@ namespace Traffic
         /// </summary>
         void FixedUpdate()
         {
+            var currentSpeed = transform.parent.GetComponent<GameConfig>().Speed;
             if (Input.GetKey(KeyCode.W))
             {
-                Move(gaz);
+                Move(currentSpeed * 1.1F);
             }
             else if (Input.GetKey(KeyCode.S))
             {
-                Move(breaks);
+                Move(currentSpeed * 0.9F);
             }
             else
             {
-                var currentSpeed = transform.parent.GetComponent<GameConfig>().Speed;
                 Move(currentSpeed);
             }
 
