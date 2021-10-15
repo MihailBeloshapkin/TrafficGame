@@ -44,11 +44,6 @@ namespace Traffic
             this.occupiedLines = new List<int>();
             this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
             StartCoroutine(TestCoroutine());
-        /*    this.currentObjects = new List<GameObject>();
-            var pl = Instantiate(platPrefab);
-            pl.GetComponent<Plat>().Speed = transform.parent.GetComponent<GameConfig>().Speed;
-            pl.GetComponent<Plat>().StartPosition = new Vector3(0, 0.3F, 20);
-            currentObjects.Add(pl); */
         }
 
         private void Generation()
@@ -82,16 +77,6 @@ namespace Traffic
                 currentObjects.Add((pl, true));
                 Debug.Log(Time.deltaTime);
             }
-            /*
-            while (true)
-            {
-                yield return new WaitForSeconds(2.0F);
-                var pl = Instantiate(platPrefab);
-                pl.GetComponent<Plat>().Speed = transform.parent.GetComponent<GameConfig>().Speed;
-                pl.GetComponent<Plat>().StartPosition = new Vector3(UnityEngine.Random.Range(-3, 3), 0.3F, 20);
-                currentObjects.Add(pl);
-                Debug.Log(Time.deltaTime);
-            } */
         }
 
 
@@ -120,15 +105,6 @@ namespace Traffic
                 this.currentObjects.Remove((obj, isOccupied));
                 Destroy(obj);
             }
-            
-            // var newObj = Instantiate
-            
-                /*
-            if (cube.transform.localPosition.z < carInfo.StartPosition.z - 7)
-            {
-                cube.transform.localPosition = carInfo.StartPosition + new Vector3(UnityEngine.Random.Range(-3, 3), 0, 10);
-            }
-            cube.transform.localPosition += new Vector3(0, 0, -0.1F); */ 
         } 
     }
 }

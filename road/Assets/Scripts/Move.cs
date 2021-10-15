@@ -97,7 +97,7 @@ namespace Traffic
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.name == "PoliceCar")
+            if (collision.gameObject.tag == "Police")
             {
                 Debug.Log("Collision!");
             }
