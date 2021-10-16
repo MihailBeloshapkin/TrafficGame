@@ -2,75 +2,106 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : MonoBehaviour
+
+namespace Traffic
 {
-    public Vector3 direction;
-    
-    /// Right direction. 
-    private Vector3 right;
-
-    /// Left direction.
-    private Vector3 left;
-
-    /// Forward direction.
-    private Vector3 forward;
-
-    /// Back direction.
-    private Vector3 back;
-    
-    /// Left boundary of the road.
-    private float leftBoundary;
-
-    /// Right boundary of the road.
-    private float rightBoundary;
-
-    /// First position of the car.
-    private Vector3 startPosition;
-
-
-    // Here we set values for vectors.
-    void Start()
+    /// <summary>
+    /// Script that manages car movement.
+    /// </summary>
+    public class Move : MonoBehaviour
     {
-        this.right = new Vector3(0.1F, 0, 0);
-        this.left = new Vector3(-0.1F, 0, 0);
-        this.forward = new Vector3(0, 0, 0.01F);
-        this.back = new Vector3(0, 0, -0.01F);
-        this.leftBoundary = -2.1F;
-        this.rightBoundary = 2.1F;
-        this.startPosition = transform.localPosition;
-    }
+        /// Right direction. 
+        [SerializeField]
+        private Vector3 right;
 
-    // Car controlling.
-    void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.A))
+        /// Left direction.
+        [SerializeField]
+        private Vector3 left;
+
+        /// Forward direction.
+        [SerializeField]
+        private Vector3 forward;
+
+        /// Back direction.
+        [SerializeField]
+        private Vector3 back;
+
+        /// Left boundary of the road.
+        [SerializeField]
+        private float leftBoundary;
+
+        /// Right boundary of the road.
+        [SerializeField]
+        private float rightBoundary;
+
+        [SerializeField]
+        private float frontBoundary;
+
+        [SerializeField]
+        private float backBoundary;
+
+        /// First position of the car.
+        [SerializeField]
+        private Vector3 startPosition;
+
+        /// Start position property. 
+        [SerializeField]
+        public Vector3 StartPosition { get => this.startPosition; }
+
+
+        /// Here we set values for vectors.
+        void Start()
         {
-            if ((transform.localPosition + left).x > leftBoundary)
-            {
-                transform.Translate(this.left);
-            }
+            this.right = new Vector3(0.1F, 0, 0);
+            this.left = new Vector3(-0.1F, 0, 0);
+            this.forward = new Vector3(0, 0, 0.01F);
+            this.back = new Vector3(0, 0, -0.01F);
+            this.leftBoundary = -2.1F;
+            this.rightBoundary = 2.1F;
+            this.frontBoundary = 2.5F;
+            this.backBoundary = -0.5F;
+            transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;
+            this.startPosition = transform.localPosition;
         }
-        if (Input.GetKey(KeyCode.D))
+
+        /// Car controlling.
+        void FixedUpdate()
         {
-            if ((transform.localPosition + right).x < rightBoundary)
+            if (Input.GetKey(KeyCode.A) && (transform.localPosition + left).x > leftBoundary)
+            {
+                transform.Translate(this.left);   
+            }
+            if (Input.GetKey(KeyCode.D) && (transform.localPosition + right).x < rightBoundary)
             {
                 transform.Translate(this.right);
             }
+            if (Input.GetKey(KeyCode.W) && (transform.localPosition + forward).z < this.frontBoundary)
+            {
+                transform.Translate(this.forward);
+            }
+            else if (Input.GetKey(KeyCode.S) && (transform.localPosition + back).z > this.backBoundary)
+            {
+                transform.Translate(this.back);
+            }
+            else
+            {
+                if (transform.localPosition.z > startPosition.z)
+                    transform.Translate(back);
+                if (transform.localPosition.z < startPosition.z)
+                    transform.Translate(forward);
+            }
         }
-        if (Input.GetKey(KeyCode.W))
+
+        /// <summary>
+        /// Manages collisions.
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnCollisionEnter(Collision collision)
         {
-            transform.Translate(this.forward);
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            transform.Translate(this.back);
-        }
-        else
-        {
-            if (transform.localPosition.z > startPosition.z)
-                transform.Translate(back);
-            if (transform.localPosition.z < startPosition.z)
-                transform.Translate(forward);
+            if (collision.gameObject.tag == "Police")
+            {
+                Debug.Log("Collision!");
+            }
         }
     }
 }
