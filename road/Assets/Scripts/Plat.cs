@@ -19,6 +19,9 @@ namespace Traffic
         [SerializeField]
         private GameConfig state;
 
+        [SerializeField]
+        private int id;
+
         public override Vector3 Speed
         {
             get => speed;
@@ -39,6 +42,12 @@ namespace Traffic
         {
             get => this.state;
             set => this.state = value;
+        }
+
+        public override int Id
+        {
+            get => this.id;
+            set => this.id = value;
         }
 
         // Start.

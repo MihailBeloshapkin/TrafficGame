@@ -18,11 +18,18 @@ public class GameConfig : MonoBehaviour
 
     [SerializeField] private float maxSpeed;
 
-    // Position which car starts with.
+    [SerializeField] private Vector3 reducer;
+
+    /// <summary>
+    /// Car start position.
+    /// </summary>
     public Vector3 CarStartPosition { get => this.carStartPosition; }
 
     public Vector3 Speed { get => this.speed; }
 
+    /// <summary>
+    /// INstant speed value.
+    /// </summary>
     public Vector3 InstantSpeed { get => this.instantSpeed; }
 
     // Start is called before the first frame update
@@ -32,7 +39,8 @@ public class GameConfig : MonoBehaviour
         this.acceleration = false;
         this.startSpeed = this.instantSpeed;
         this.maxSpeed = -0.9F;
-        StartCoroutine(SpeedCoroutine());
+        this.reducer = new Vector3(0, 0, 0.03F);
+        //    StartCoroutine(SpeedCoroutine());
     }
 
     // Update is called once per frame
@@ -68,6 +76,8 @@ public class GameConfig : MonoBehaviour
         if (acceleration && this.instantSpeed.z > this.maxSpeed)
             this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
         if (!acceleration)
+        {
             this.instantSpeed = this.startSpeed;
+        } //  && (float)System.Math.Abs(this.instantSpeed.z - this.startSpeed.z) > 0.1F
     }
 }

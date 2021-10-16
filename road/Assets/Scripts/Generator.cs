@@ -29,7 +29,13 @@ namespace Traffic
         private List<int> occupiedLines;
 
         [SerializeField]
+        private int countOfOccupied;
+
+        [SerializeField]
         private List<float> zPositions;
+
+        [SerializeField]
+        private int id;
 
         private enum RoadObjects
         { 
@@ -40,21 +46,26 @@ namespace Traffic
         // Start is called before the first frame update
         void Start()
         {
+            this.id = 0;
             this.currentObjects = new List<(GameObject, bool)>();
             this.occupiedLines = new List<int>();
             this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
             StartCoroutine(TestCoroutine());
         }
 
-        private void Generation()
-        {
-        }
-
+        /// <summary>
+        /// Calculates distance between two points in three-dimensional space. 
+        /// </summary>
         private float distance(Vector3 first, Vector3 second)
         {
             return (float)Math.Sqrt((first.x - second.x) * (first.x - second.x) + (first.y - second.y) * (first.y - second.y) + (first.z - second.z) * (first.z - second.z));
         }
 
+        private int IdGenerator() => this.id++;
+
+        /// <summary>
+        /// Objects generation. 
+        /// </summary>
         IEnumerator TestCoroutine()
         {
             while (true)
@@ -70,10 +81,11 @@ namespace Traffic
                     }
                 }
                 var pl = Instantiate(policePrefab);
-                pl.GetComponent<OnRoadObject>().Speed = transform.parent.GetComponent<GameConfig>().Speed;
-                var index = UnityEngine.Random.Range(0, (zPositions.Count - 1));
-                pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.3F, 20);
+                pl.GetComponent<OnRoadObject>().Speed = new Vector3(0, 0, 0.07F);
+                var index = UnityEngine.Random.Range(0, (zPositions.Count));
+                pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.2F, 20);
                 pl.GetComponent<OnRoadObject>().State = transform.parent.GetComponent<GameConfig>();
+                pl.GetComponent<OnRoadObject>().Id = this.IdGenerator();
                 currentObjects.Add((pl, true));
                 Debug.Log(Time.deltaTime);
             }
@@ -87,17 +99,24 @@ namespace Traffic
             var isOccupiedObjectsIndexes = new List<int>();
             foreach (var (obj, isOccupied) in this.currentObjects)
             {
-                if (obj.transform.localPosition.z > 10F || obj.transform.localPosition.z < 0.0F) 
+                if (obj.transform.localPosition.z < 3.0F || obj.transform.localPosition.z > -0.5F) 
                 {
+                    this.countOfOccupied++;
                     var i = this.currentObjects.IndexOf((obj, isOccupied));
+                    this.occupiedLines.Add(i);
                     isOccupiedObjectsIndexes.Add(i);
                 }
+                else {
+                    this.countOfOccupied--;
+                }
+
                 if (this.distance(obj.transform.localPosition, obj.GetComponent<OnRoadObject>().StartPosition) > 100.0F)
                 {
                     objectsToDelete.Add((obj, isOccupied));
                 }
             }
-            foreach (var index in isOccupiedObjectsIndexes) {
+            foreach (var index in isOccupiedObjectsIndexes) 
+            {
                 this.currentObjects[index] = (this.currentObjects[index].Item1, false);
             }
             foreach (var (obj, isOccupied) in objectsToDelete)

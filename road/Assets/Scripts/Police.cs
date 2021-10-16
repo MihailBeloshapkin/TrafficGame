@@ -18,6 +18,9 @@ namespace Traffic
         [SerializeField]
         private GameConfig state;
 
+        [SerializeField]
+        private int id;
+
         public override Vector3 Speed
         {
             get => this.speed;
@@ -40,6 +43,12 @@ namespace Traffic
             set => this.state = value;
         }
 
+        public override int Id
+        {
+            get => this.id;
+            set => this.id = value;
+        }
+
         // Start is called before the first frame update
         public override void Start() {
 
@@ -53,7 +62,7 @@ namespace Traffic
         public override void Move()
         {
             var convSpeed = this.state.InstantSpeed;
-            transform.Translate(convSpeed);
+            transform.Translate(convSpeed + this.speed);
         }
     }
 }

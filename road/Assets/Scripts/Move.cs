@@ -34,6 +34,12 @@ namespace Traffic
         [SerializeField]
         private float rightBoundary;
 
+        [SerializeField]
+        private float frontBoundary;
+
+        [SerializeField]
+        private float backBoundary;
+
         /// First position of the car.
         [SerializeField]
         private Vector3 startPosition;
@@ -52,6 +58,8 @@ namespace Traffic
             this.back = new Vector3(0, 0, -0.01F);
             this.leftBoundary = -2.1F;
             this.rightBoundary = 2.1F;
+            this.frontBoundary = 2.5F;
+            this.backBoundary = -0.5F;
             transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;
             this.startPosition = transform.localPosition;
         }
@@ -59,25 +67,19 @@ namespace Traffic
         /// Car controlling.
         void FixedUpdate()
         {
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A) && (transform.localPosition + left).x > leftBoundary)
             {
-                if ((transform.localPosition + left).x > leftBoundary)
-                {
-                    transform.Translate(this.left);
-                }
+                transform.Translate(this.left);   
             }
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.D) && (transform.localPosition + right).x < rightBoundary)
             {
-                if ((transform.localPosition + right).x < rightBoundary)
-                {
-                    transform.Translate(this.right);
-                }
+                transform.Translate(this.right);
             }
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) && (transform.localPosition + forward).z < this.frontBoundary)
             {
                 transform.Translate(this.forward);
             }
-            else if (Input.GetKey(KeyCode.S))
+            else if (Input.GetKey(KeyCode.S) && (transform.localPosition + back).z > this.backBoundary)
             {
                 transform.Translate(this.back);
             }
@@ -90,11 +92,10 @@ namespace Traffic
             }
         }
 
-        public void Detected(Body body)
-        {
-            Debug.Log("Collided");
-        }
-
+        /// <summary>
+        /// Manages collisions.
+        /// </summary>
+        /// <param name="collision"></param>
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.tag == "Police")

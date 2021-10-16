@@ -23,7 +23,6 @@ namespace Traffic
         void OnCollisionEnter(Collision collision)
         {
             Debug.Log("C");
-            transform.parent.GetComponent<Move>().Detected(this);
             /// parentScript.OnCollisionEnter(collision);
         }
 

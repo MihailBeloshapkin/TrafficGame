@@ -16,6 +16,8 @@ namespace Traffic
         // Current config of the game.
         public abstract GameConfig State { get; set; }
 
+        public abstract int Id { get; set; }
+
         // Move.
         public abstract void Start();
         
