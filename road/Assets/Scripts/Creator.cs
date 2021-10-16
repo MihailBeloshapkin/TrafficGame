@@ -5,11 +5,14 @@ using Traffic;
 
 namespace Traffic
 {
+    /// <summary>
+    /// Manages objects creation.
+    /// </summary>
     public abstract class Creator : MonoBehaviour
     {
         /// <summary>
         /// Creates onRoadObject. 
         /// </summary>
-        public abstract OnRoadObject Create();
+        public abstract GameObject Create(int id, Vector3 startPosition, Vector3 speed, GameConfig state);
     }
 }

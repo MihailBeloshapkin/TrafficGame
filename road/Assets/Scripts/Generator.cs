@@ -37,6 +37,9 @@ namespace Traffic
         [SerializeField]
         private int id;
 
+        [SerializeField]
+        private PoliceCreator policeCreator;
+
         private enum RoadObjects
         { 
             Police = 0, 
@@ -50,6 +53,8 @@ namespace Traffic
             this.currentObjects = new List<(GameObject, bool)>();
             this.occupiedLines = new List<int>();
             this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
+
+            this.policeCreator = new PoliceCreator(this.policePrefab);
             StartCoroutine(TestCoroutine());
         }
 
@@ -73,7 +78,7 @@ namespace Traffic
             {
                 float delta = UnityEngine.Random.Range(1.0F, 3.0F);
                 yield return new WaitForSeconds(delta);
-                if (this.currentObjects.Count < 10)
+                if (this.currentObjects.Count < 5)
                 {
                     var occupied = new List<float>();
                     foreach (var (obj, isOccupied) in this.currentObjects)
@@ -83,13 +88,9 @@ namespace Traffic
                             occupied.Add(obj.transform.localPosition.x);
                         }
                     }
-                    var pl = Instantiate(policePrefab);
-                    pl.GetComponent<OnRoadObject>().Speed = new Vector3(0, 0, 0.07F);
                     var index = UnityEngine.Random.Range(0, (zPositions.Count));
-                    pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.2F, 40);
-                    pl.GetComponent<OnRoadObject>().State = transform.parent.GetComponent<GameConfig>();
-                    pl.GetComponent<OnRoadObject>().Id = this.IdGenerator();
-                    currentObjects.Add((pl, true));
+                    var sample = this.policeCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
+                    this.currentObjects.Add((sample, true));
                 }
             }
         }

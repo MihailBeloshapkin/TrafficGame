@@ -11,11 +11,12 @@ namespace Traffic
         public abstract Vector3 StartPosition { get; set; }
 
         // Speed.
-        public abstract Vector3 Speed { get; set; }
+        public abstract Vector3 Speed { get; set;  }
 
         // Current config of the game.
         public abstract GameConfig State { get; set; }
 
+        // Uniaue id.
         public abstract int Id { get; set; }
 
         // Move.
