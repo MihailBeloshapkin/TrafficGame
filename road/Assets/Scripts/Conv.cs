@@ -52,7 +52,6 @@ namespace Traffic
                 GameObject plat = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 plat.transform.localPosition = new Vector3(0, 0, 0);
                 plat.transform.localScale = new Vector3(6, 0.5F, 5);
-                plat.AddComponent<MeshRenderer>();
                 int materialIndex = UnityEngine.Random.Range(0, this.materials.Count);
                 plat.GetComponent<MeshRenderer>().material = this.materials[materialIndex];
                 this.Road.Add(plat);
@@ -67,7 +66,7 @@ namespace Traffic
             {
                 if (iter % 2 == 0)
                 {
-                    plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
+                    plat.transform.localPosition += new Vector3(0, 0, roadIndex * this.Road[0].transform.localScale.z);
                     roadIndex++;
                     isRoad[iter] = true;
                 }
@@ -87,19 +86,7 @@ namespace Traffic
         void FixedUpdate()
         {
             var instantSpeed = transform.parent.GetComponent<GameConfig>().InstantSpeed;
-            if (Input.GetKey(KeyCode.W))
-            {
-                Move(instantSpeed * 1.1F);
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                Move(instantSpeed * 0.9F);
-            }
-            else
-            {
-                Move(instantSpeed);
-            }
-
+            Move(instantSpeed);
             TransformPlates();
         }
 

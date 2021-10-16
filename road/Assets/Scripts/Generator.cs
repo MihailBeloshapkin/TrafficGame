@@ -61,6 +61,7 @@ namespace Traffic
             return (float)Math.Sqrt((first.x - second.x) * (first.x - second.x) + (first.y - second.y) * (first.y - second.y) + (first.z - second.z) * (first.z - second.z));
         }
 
+        // Generates unique id for road objects.
         private int IdGenerator() => this.id++;
 
         /// <summary>
@@ -72,22 +73,24 @@ namespace Traffic
             {
                 float delta = UnityEngine.Random.Range(1.0F, 3.0F);
                 yield return new WaitForSeconds(delta);
-                var occupied = new List<float>();
-                foreach (var (obj, isOccupied) in this.currentObjects)
+                if (this.currentObjects.Count < 10)
                 {
-                    if (isOccupied)
+                    var occupied = new List<float>();
+                    foreach (var (obj, isOccupied) in this.currentObjects)
                     {
-                        occupied.Add(obj.transform.localPosition.x);
+                        if (isOccupied)
+                        {
+                            occupied.Add(obj.transform.localPosition.x);
+                        }
                     }
+                    var pl = Instantiate(policePrefab);
+                    pl.GetComponent<OnRoadObject>().Speed = new Vector3(0, 0, 0.07F);
+                    var index = UnityEngine.Random.Range(0, (zPositions.Count));
+                    pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.2F, 40);
+                    pl.GetComponent<OnRoadObject>().State = transform.parent.GetComponent<GameConfig>();
+                    pl.GetComponent<OnRoadObject>().Id = this.IdGenerator();
+                    currentObjects.Add((pl, true));
                 }
-                var pl = Instantiate(policePrefab);
-                pl.GetComponent<OnRoadObject>().Speed = new Vector3(0, 0, 0.07F);
-                var index = UnityEngine.Random.Range(0, (zPositions.Count));
-                pl.GetComponent<OnRoadObject>().StartPosition = new Vector3(zPositions[index], 0.2F, 20);
-                pl.GetComponent<OnRoadObject>().State = transform.parent.GetComponent<GameConfig>();
-                pl.GetComponent<OnRoadObject>().Id = this.IdGenerator();
-                currentObjects.Add((pl, true));
-                Debug.Log(Time.deltaTime);
             }
         }
 

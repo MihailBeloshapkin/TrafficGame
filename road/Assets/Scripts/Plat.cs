@@ -50,6 +50,15 @@ namespace Traffic
             set => this.id = value;
         }
 
+        /*
+        public Plat(int id, Vector3 startPosition, Vector3 speed, GameConfig state)
+        {
+            this.id = id;
+            this.startPosition = startPosition;
+            this.speed = new Vector3(0, 0, 0);
+            this.state = state;
+        }*/
+
         // Start.
         public override void Start()
         {

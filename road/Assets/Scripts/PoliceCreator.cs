@@ -1,16 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Traffic;
 
 namespace Traffic
 {
-    public class PlatCreator : Creator
+    public class PoliceCreator : Creator
     {
-        // Create sample.
         public override OnRoadObject Create()
         {
-            return new Plat();
+            return new Police();
         }
     }
 }
