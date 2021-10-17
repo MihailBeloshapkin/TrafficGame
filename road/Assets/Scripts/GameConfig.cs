@@ -20,6 +20,8 @@ public class GameConfig : MonoBehaviour
 
     [SerializeField] private Vector3 reducer;
 
+    [SerializeField] private int health;
+
     /// <summary>
     /// Car start position.
     /// </summary>
@@ -40,6 +42,7 @@ public class GameConfig : MonoBehaviour
         this.startSpeed = this.instantSpeed;
         this.maxSpeed = -0.9F;
         this.reducer = new Vector3(0, 0, 0.03F);
+        this.health = 3;
         //    StartCoroutine(SpeedCoroutine());
     }
 
@@ -61,17 +64,18 @@ public class GameConfig : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Manages car acceleration.
+    /// </summary>
     private void Acceleration()
     {
-        if (Input.GetKeyDown(KeyCode.W) && !this.acceleration) 
+        if (Input.GetKey(KeyCode.W) && !this.acceleration) 
         {
             acceleration = true;
-            Debug.Log("W is down");
         }
-        if (Input.GetKeyUp(KeyCode.W) && this.acceleration)
+        if (!Input.GetKey(KeyCode.W) && this.acceleration)
         {
             acceleration = false;
-            Debug.Log("W is up");
         }
         if (acceleration && this.instantSpeed.z > this.maxSpeed)
             this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
@@ -79,5 +83,10 @@ public class GameConfig : MonoBehaviour
         {
             this.instantSpeed = this.startSpeed;
         } //  && (float)System.Math.Abs(this.instantSpeed.z - this.startSpeed.z) > 0.1F
+    }
+
+    public void Damage()
+    {
+        Debug.Log("Damage!");
     }
 }

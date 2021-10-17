@@ -44,6 +44,8 @@ namespace Traffic
         [SerializeField]
         private Vector3 startPosition;
 
+        
+
         /// Start position property. 
         [SerializeField]
         public Vector3 StartPosition { get => this.startPosition; }
@@ -100,7 +102,7 @@ namespace Traffic
         {
             if (collision.gameObject.tag == "Police")
             {
-                Debug.Log("Collision!");
+                transform.parent.GetComponent<GameConfig>().Damage();
             }
         }
     }
