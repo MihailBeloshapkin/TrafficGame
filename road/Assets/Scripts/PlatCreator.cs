@@ -24,6 +24,7 @@ namespace Traffic
             plat.AddComponent<Plat>();
             plat.GetComponent<OnRoadObject>().StartPosition = startPosition;
             plat.GetComponent<OnRoadObject>().Speed = new Vector3(0, 0, 0);
+            plat.GetComponent<OnRoadObject>().State = state;
             plat.transform.localScale = new Vector3(1, 1, 1);
 
             // And set random material.

@@ -68,7 +68,8 @@ namespace Traffic
             {
                 throw new System.ArgumentException("Z component of speed value for plat should be negative");
             }
-            transform.Translate(this.speed);
+            var convSpeed = this.state.InstantSpeed;
+            transform.Translate(convSpeed);
         }
     }
 }

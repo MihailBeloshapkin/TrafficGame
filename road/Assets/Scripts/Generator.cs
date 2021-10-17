@@ -40,6 +40,11 @@ namespace Traffic
         [SerializeField]
         private PoliceCreator policeCreator;
 
+        [SerializeField] private PlatCreator platCreator;
+
+        [SerializeField]
+        private List<Material> platMaterials;
+
         private enum RoadObjects
         { 
             Police = 0, 
@@ -55,6 +60,7 @@ namespace Traffic
             this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
 
             this.policeCreator = new PoliceCreator(this.policePrefab);
+            this.platCreator = new PlatCreator(this.platMaterials);
             StartCoroutine(TestCoroutine());
         }
 
@@ -78,7 +84,7 @@ namespace Traffic
             {
                 float delta = UnityEngine.Random.Range(1.0F, 3.0F);
                 yield return new WaitForSeconds(delta);
-                if (this.currentObjects.Count < 5)
+                if (this.currentObjects.Count < 10)
                 {
                     var occupied = new List<float>();
                     foreach (var (obj, isOccupied) in this.currentObjects)
@@ -88,9 +94,19 @@ namespace Traffic
                             occupied.Add(obj.transform.localPosition.x);
                         }
                     }
-                    var index = UnityEngine.Random.Range(0, (zPositions.Count));
-                    var sample = this.policeCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
-                    this.currentObjects.Add((sample, true));
+                    int result = UnityEngine.Random.Range(0, 2);
+                    if (result == 0)
+                    {
+                        var index = UnityEngine.Random.Range(0, (zPositions.Count));
+                        var sample = this.policeCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
+                        this.currentObjects.Add((sample, true));
+                    }
+                    if (result == 1)
+                    {
+                        var index = UnityEngine.Random.Range(0, (zPositions.Count));
+                        var sample = this.platCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
+                        this.currentObjects.Add((sample, true));
+                    }
                 }
             }
         }
