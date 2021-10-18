@@ -19,9 +19,13 @@ namespace Traffic
 
         [SerializeField] private bool acceleration;
 
-        [SerializeField] private float maxSpeed;
+        [SerializeField] private bool backAcceleration;
 
-        [SerializeField] private Vector3 reducer;
+        [SerializeField] private Vector3 accelerationVector;
+
+        [SerializeField] private Vector3 backAccelerationVector;
+
+        [SerializeField] private float maxSpeed;
 
         [SerializeField] private int health;
 
@@ -42,9 +46,9 @@ namespace Traffic
         {
             //    this.carStartPosition = new Vector3(0, 0.2F, -0.9F);
             this.acceleration = false;
+            this.backAcceleration = false;
             this.startSpeed = this.instantSpeed;
-            this.maxSpeed = -0.9F;
-            this.reducer = new Vector3(0, 0, 0.03F);
+            this.maxSpeed = -0.5F;
             this.health = 3;
             //    StartCoroutine(SpeedCoroutine());
         }
@@ -63,7 +67,7 @@ namespace Traffic
             while (true)
             {
                 yield return new WaitForSeconds(10.0F);
-                this.speed *= 1.1F;
+                this.startSpeed *= 1.1F;
             }
         }
 
@@ -74,18 +78,30 @@ namespace Traffic
         {
             if (Input.GetKey(KeyCode.W) && !this.acceleration)
             {
-                acceleration = true;
+                this.backAcceleration = false;
+                this.acceleration = true;
             }
             if (!Input.GetKey(KeyCode.W) && this.acceleration)
             {
-                acceleration = false;
+                this.acceleration = false;
+            }
+            if (Input.GetKey(KeyCode.S) && !this.backAcceleration)
+            {
+                this.acceleration = false;
+                this.backAcceleration = true;
+            }
+            if (backAcceleration && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.08F) * Time.deltaTime;
             }
             if (acceleration && this.instantSpeed.z > this.maxSpeed)
-                this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
-            if (!acceleration)
             {
-                this.instantSpeed = this.startSpeed;
-            } //  && (float)System.Math.Abs(this.instantSpeed.z - this.startSpeed.z) > 0.1F
+                this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
+            if (!acceleration && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
         }
 
         public void Damage()

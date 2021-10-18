@@ -152,15 +152,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b6e0447461c0204f8491a29b14961a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 0}
-  onRoadObjectsPrefabs: []
-  platPrefab: {fileID: 5285452193102608432, guid: e1a664a333a2b0643bbd9d171f1e46ef, type: 3}
-  policePrefab: {fileID: 3611284756571026188, guid: 9445a895504aaf443aac3c3f97c2e3c6, type: 3}
-  occupiedLines: 
+  currentObjects: []
+  policePrefab:
+  - {fileID: 3611284756571026188, guid: 9445a895504aaf443aac3c3f97c2e3c6, type: 3}
+  - {fileID: 8111445092387399244, guid: db11895d519f81847b9b0d0495c65e7e, type: 3}
+  - {fileID: 7700367033931996277, guid: ba851f5a981d7364dae37927401803c4, type: 3}
   countOfOccupied: 0
   zPositions: []
   id: 0
   policeCreator: {fileID: 0}
+  platCreator: {fileID: 0}
+  platMaterials: []
+  zDistanceBetweenCars: 5
+  distance: 1000000
 --- !u!4 &109089705
 Transform:
   m_ObjectHideFlags: 0
@@ -1093,8 +1097,10 @@ MonoBehaviour:
   startSpeed: {x: 0, y: 0, z: 0}
   carStartPosition: {x: 0, y: 0.2, z: 0}
   acceleration: 0
+  backAcceleration: 0
+  accelerationVector: {x: 0, y: 0, z: 0}
+  backAccelerationVector: {x: 0, y: 0, z: 0}
   maxSpeed: 0
-  reducer: {x: 0, y: 0, z: 0}
   health: 0
 --- !u!1001 &825976067
 PrefabInstance:
@@ -2599,7 +2605,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1906082373}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 0.5, z: 2}

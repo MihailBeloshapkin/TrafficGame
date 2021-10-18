@@ -9,9 +9,9 @@ namespace Traffic
     /// </summary>
     public class PoliceCreator : Creator
     {
-        [SerializeField] private GameObject policePrefab;
+        [SerializeField] private List<GameObject> policePrefab;
 
-        public PoliceCreator(GameObject policePrefab)
+        public PoliceCreator(List<GameObject> policePrefab)
         {
             this.policePrefab = policePrefab;
         }
@@ -19,7 +19,8 @@ namespace Traffic
         // Create sample.
         public override GameObject Create(int id, Vector3 startPosition, Vector3 speed, GameConfig state)
         {
-            var pl = Instantiate(this.policePrefab);
+            int index = UnityEngine.Random.Range(0, this.policePrefab.Count);
+            var pl = Instantiate(this.policePrefab[index]);
             pl.GetComponent<OnRoadObject>().Speed = speed;
             pl.GetComponent<OnRoadObject>().StartPosition = startPosition;
             pl.GetComponent<OnRoadObject>().State = state;

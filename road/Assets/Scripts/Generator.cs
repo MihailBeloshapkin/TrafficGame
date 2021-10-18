@@ -10,64 +10,80 @@ namespace Traffic
     /// </summary>
     public class Generator : MonoBehaviour
     {
-        [SerializeField]
-        public GameObject cube;
+        [SerializeField] private List<GameObject> currentObjects;
 
-        [SerializeField]
-        private List<OnRoadObject> onRoadObjectsPrefabs;
+        [SerializeField] private List<GameObject> policePrefab;
 
-        [SerializeField]
-        private List<(GameObject, bool)> currentObjects;
+        [SerializeField] private int countOfOccupied;
 
-        [SerializeField]
-        private GameObject platPrefab;
+        [SerializeField] private List<float> zPositions;
 
-        [SerializeField]
-        private GameObject policePrefab;
+        [SerializeField] private int id;
 
-        [SerializeField]
-        private List<int> occupiedLines;
-
-        [SerializeField]
-        private int countOfOccupied;
-
-        [SerializeField]
-        private List<float> zPositions;
-
-        [SerializeField]
-        private int id;
-
-        [SerializeField]
-        private PoliceCreator policeCreator;
+        [SerializeField] private PoliceCreator policeCreator;
 
         [SerializeField] private PlatCreator platCreator;
 
-        [SerializeField]
-        private List<Material> platMaterials;
+        [SerializeField] private List<Material> platMaterials;
 
-        private enum RoadObjects
-        { 
-            Police = 0, 
-            Plat = 1
-        }
+        [SerializeField] private float zDistanceBetweenCars;
 
-        // Start is called before the first frame update
-        void Start()
+        [SerializeField] private List<int[][]> sampleMatrixes;
+
+        [SerializeField] private float distance = 1000000.0F;
+
+        /// <summary>
+        /// Start configuration.
+        /// </summary>
+        public void Start()
         {
             this.id = 0;
-            this.currentObjects = new List<(GameObject, bool)>();
-            this.occupiedLines = new List<int>();
-            this.zPositions = new List<float>() { -2.5F, -1.5F, 0.0F, 1.5F, 2.5F };
+            this.currentObjects = new List<GameObject>();
+            this.zPositions = new List<float>() { -2.4F, -1.2F, 0.0F, 1.2F, 2.4F };
 
             this.policeCreator = new PoliceCreator(this.policePrefab);
             this.platCreator = new PlatCreator(this.platMaterials);
-            StartCoroutine(TestCoroutine());
+
+            this.sampleMatrixes = new List<int[][]>()
+            {
+                new int[][] 
+                {
+                    new int[] { 1, 0, 0, 0, 0 },
+                    new int[] { 0, 1, 0, 0, 0 },
+                    new int[] { 0, 0, 0, 0, 1 },
+                    new int[] { 1, 0, 0, 1, 0 }
+                },
+                new int[][]
+                {
+                    new int[] { 0, 1, 0, 0, 1 },
+                    new int[] { 0, 0, 0, 0, 0 },
+                    new int[] { 0, 0, 0, 1, 1 },
+                    new int[] { 1, 0, 1, 0, 0 }
+                },
+                new int[][]
+                {
+                    new int[] { 1, 0, 1, 0, 1 },
+                    new int[] { 0, 1, 0, 0, 0 },
+                    new int[] { 0, 0, 1, 0, 1 },
+                    new int[] { 1, 0, 0, 0, 0 }
+                },
+                new int[][]
+                {
+                    new int[] { 1, 0, 0, 0, 0 },
+                    new int[] { 0, 0, 1, 0, 0 },
+                    new int[] { 1, 0, 0, 1, 0 },
+                    new int[] { 0, 0, 1, 0, 1 }
+                }
+            };
+
+            int sampleIndex = UnityEngine.Random.Range(0, this.sampleMatrixes.Count);
+            this.GenerateSample(sampleIndex);
         }
 
         /// <summary>
         /// Calculates distance between two points in three-dimensional space. 
         /// </summary>
-        private float distance(Vector3 first, Vector3 second)
+        private float Distance(Vector3 first, Vector3 second)
         {
             return (float)Math.Sqrt((first.x - second.x) * (first.x - second.x) + (first.y - second.y) * (first.y - second.y) + (first.z - second.z) * (first.z - second.z));
         }
@@ -75,75 +91,75 @@ namespace Traffic
         // Generates unique id for road objects.
         private int IdGenerator() => this.id++;
 
-        /// <summary>
-        /// Objects generation. 
-        /// </summary>
-        IEnumerator TestCoroutine()
+        IEnumerator NewCoroutine()
         {
-            while (true)
+            yield return new WaitForSeconds(5.0F);
+        }
+
+      
+        /// <summary>
+        /// Generates sample from sample matrix.
+        /// </summary>
+        private void GenerateSample(int index)
+        {
+            Vector3 startZPosition = new Vector3(zPositions[0], 0.2F, 70);
+            int[][] sampleMatrix = this.sampleMatrixes[index];
+
+            foreach (var line in sampleMatrix)
             {
-                float delta = UnityEngine.Random.Range(1.0F, 3.0F);
-                yield return new WaitForSeconds(delta);
-                if (this.currentObjects.Count < 10)
+                foreach (var position in line)
                 {
-                    var occupied = new List<float>();
-                    foreach (var (obj, isOccupied) in this.currentObjects)
+                    if (position == 1)
                     {
-                        if (isOccupied)
-                        {
-                            occupied.Add(obj.transform.localPosition.x);
-                        }
+                        float delta = UnityEngine.Random.Range(-1F, 1F);
+                        int newId = this.IdGenerator();
+                        var speed = new Vector3(0, 0, 0.07F);
+                        var state = transform.parent.GetComponent<GameConfig>();
+                        var sample = this.policeCreator.Create(newId, startZPosition + new Vector3(0, 0, delta), speed, state);
+                        this.currentObjects.Add(sample);
                     }
-                    int result = UnityEngine.Random.Range(0, 2);
-                    if (result == 0)
-                    {
-                        var index = UnityEngine.Random.Range(0, (zPositions.Count));
-                        var sample = this.policeCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
-                        this.currentObjects.Add((sample, true));
-                    }
-                    if (result == 1)
-                    {
-                        var index = UnityEngine.Random.Range(0, (zPositions.Count));
-                        var sample = this.platCreator.Create(this.IdGenerator(), new Vector3(zPositions[index], 0.2F, 40), new Vector3(0, 0, 0.07F), transform.parent.GetComponent<GameConfig>());
-                        this.currentObjects.Add((sample, true));
-                    }
+                    startZPosition += new Vector3(1.2F, 0, 0);
                 }
+                startZPosition.x = zPositions[0];
+                startZPosition -= new Vector3(0, 0, this.zDistanceBetweenCars);
             }
         }
 
-
-        // Updater.
+        /// <summary>
+        /// Manages generation of objects.
+        /// </summary>
         void FixedUpdate()
         {
-            var objectsToDelete = new List<(GameObject, bool)>();
+            var objectsToDelete = new List<GameObject>();
             var isOccupiedObjectsIndexes = new List<int>();
-            foreach (var (obj, isOccupied) in this.currentObjects)
+
+            distance = 1000000.0F;
+
+            foreach (var obj in this.currentObjects)
             {
-                if (obj.transform.localPosition.z < 3.0F || obj.transform.localPosition.z > -0.5F) 
+                float objCoordinateZ = obj.transform.localPosition.z;
+                if (Math.Abs(obj.transform.localPosition.z - 70.0F) < distance)
                 {
-                    this.countOfOccupied++;
-                    var i = this.currentObjects.IndexOf((obj, isOccupied));
-                    this.occupiedLines.Add(i);
-                    isOccupiedObjectsIndexes.Add(i);
-                }
-                else {
-                    this.countOfOccupied--;
+                    distance = Math.Abs(obj.transform.localPosition.z - 70.0F);
                 }
 
-                if (this.distance(obj.transform.localPosition, obj.GetComponent<OnRoadObject>().StartPosition) > 100.0F)
+                if (this.Distance(obj.transform.localPosition, obj.GetComponent<OnRoadObject>().StartPosition) > 100.0F)
                 {
-                    objectsToDelete.Add((obj, isOccupied));
+                    objectsToDelete.Add(obj);
                 }
             }
-            foreach (var index in isOccupiedObjectsIndexes) 
+
+            foreach (var obj in objectsToDelete)
             {
-                this.currentObjects[index] = (this.currentObjects[index].Item1, false);
-            }
-            foreach (var (obj, isOccupied) in objectsToDelete)
-            {
-                this.currentObjects.Remove((obj, isOccupied));
+                this.currentObjects.Remove(obj);
                 Destroy(obj);
             }
-        } 
+
+            if (distance > 25.0F)
+            {
+                int sampleIndex = UnityEngine.Random.Range(0, this.sampleMatrixes.Count);
+                this.GenerateSample(sampleIndex);
+            }
+        }
     }
 }
