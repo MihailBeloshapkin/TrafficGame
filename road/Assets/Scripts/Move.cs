@@ -44,6 +44,8 @@ namespace Traffic
         [SerializeField]
         private Vector3 startPosition;
 
+        
+
         /// Start position property. 
         [SerializeField]
         public Vector3 StartPosition { get => this.startPosition; }
@@ -52,13 +54,13 @@ namespace Traffic
         /// Here we set values for vectors.
         void Start()
         {
-            this.right = new Vector3(0.1F, 0, 0);
-            this.left = new Vector3(-0.1F, 0, 0);
+            this.right = new Vector3(0.05F, 0, 0);
+            this.left = new Vector3(-0.05F, 0, 0);
             this.forward = new Vector3(0, 0, 0.01F);
             this.back = new Vector3(0, 0, -0.01F);
-            this.leftBoundary = -2.1F;
-            this.rightBoundary = 2.1F;
-            this.frontBoundary = 2.5F;
+            this.leftBoundary = -2.5F;
+            this.rightBoundary = 2.5F;
+            this.frontBoundary = 0.7F;
             this.backBoundary = -0.5F;
             transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;
             this.startPosition = transform.localPosition;
@@ -96,11 +98,12 @@ namespace Traffic
         /// Manages collisions.
         /// </summary>
         /// <param name="collision"></param>
-        private void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider other)
         {
-            if (collision.gameObject.tag == "Police")
+            Debug.Log("Damage");
+            if (other.gameObject.tag == "Police")
             {
-                Debug.Log("Collision!");
+                transform.parent.GetComponent<GameConfig>().Damage();
             }
         }
     }

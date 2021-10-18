@@ -30,11 +30,12 @@ namespace Traffic
         public override Vector3 StartPosition
         {
             get => this.startPosition;
-            set
-            {
+            set 
+            { 
                 this.startPosition = value;
-                transform.localPosition = this.startPosition;
+                transform.localPosition = startPosition;
             }
+
         }
 
         public override GameConfig State

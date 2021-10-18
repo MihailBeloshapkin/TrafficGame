@@ -12,36 +12,61 @@ namespace Traffic
     public class Conv : MonoBehaviour
     {
         /// Current plates
-        public List<GameObject> Road;
+        [SerializeField]
+        private List<GameObject> Road;
+
+        [SerializeField]
+        private List<Material> materials;
 
         /// <summary>
         /// Bool array. 
         /// </summary>
-        public bool[] isRoad;
+        [SerializeField]
+        private bool[] isRoad;
 
-        /// Direction. 
-        public Vector3 platformDirection;
+        [SerializeField]
+        private int size = 0;
 
-        public Vector3 gaz;
-
-        public Vector3 breaks;
-
-        public int size = 0;
+        /// <summary>
+        /// Current size of the road.
+        /// </summary>
+        public int Size
+        {
+            get => this.size;
+            set
+            {
+                foreach (var pl in this.Road)
+                {
+                    Destroy(pl);
+                }
+                this.size = value;
+                this.Start();
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
         {
+            for (int i = 0; i < 40; i++)
+            {
+                GameObject plat = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                plat.transform.localPosition = new Vector3(0, 0, 0);
+                plat.transform.localScale = new Vector3(6, 0.5F, 5);
+                int materialIndex = UnityEngine.Random.Range(0, this.materials.Count);
+                plat.GetComponent<MeshRenderer>().material = this.materials[materialIndex];
+                this.Road.Add(plat);
+            }
+
+            isRoad = new bool[Road.Count];
+
             int iter = 0;
             int roadIndex = 0;
-            isRoad = new bool[Road.Count];
+
             foreach (var plat in Road)
             {
-                /*            plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
-                            roadIndex++;
-                */
                 if (iter % 2 == 0)
                 {
-                    plat.transform.localPosition += new Vector3(0, 0, roadIndex * 5);
+                    plat.transform.localPosition += new Vector3(0, 0, roadIndex * this.Road[0].transform.localScale.z);
                     roadIndex++;
                     isRoad[iter] = true;
                 }
@@ -61,19 +86,7 @@ namespace Traffic
         void FixedUpdate()
         {
             var instantSpeed = transform.parent.GetComponent<GameConfig>().InstantSpeed;
-            if (Input.GetKey(KeyCode.W))
-            {
-                Move(instantSpeed * 1.1F);
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                Move(instantSpeed * 0.9F);
-            }
-            else
-            {
-                Move(instantSpeed);
-            }
-
+            Move(instantSpeed);
             TransformPlates();
         }
 

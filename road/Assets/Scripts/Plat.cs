@@ -31,10 +31,10 @@ namespace Traffic
         public override Vector3 StartPosition 
         { 
             get => this.startPosition;
-            set
+            set 
             { 
                 this.startPosition = value;
-                transform.localPosition = startPosition;
+                transform.localPosition = this.startPosition;
             }
         }
 
@@ -68,7 +68,8 @@ namespace Traffic
             {
                 throw new System.ArgumentException("Z component of speed value for plat should be negative");
             }
-            transform.Translate(this.speed);
+            var convSpeed = this.state.InstantSpeed;
+            transform.Translate(convSpeed);
         }
     }
 }
