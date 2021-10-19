@@ -44,44 +44,67 @@ namespace Traffic
         [SerializeField]
         private Vector3 startPosition;
 
-        
+        public int directionX;
+
+        public int directionZ;
 
         /// Start position property. 
         [SerializeField]
         public Vector3 StartPosition { get => this.startPosition; }
 
+        public Rigidbody rb;
 
         /// Here we set values for vectors.
         void Start()
         {
-            this.right = new Vector3(0.05F, 0, 0);
-            this.left = new Vector3(-0.05F, 0, 0);
+            this.rb = GetComponent<Rigidbody>();
+            directionX = 0;
+            directionZ = 0;
+
+
+            this.right = new Vector3(1.7F, 0, 0);
+            this.left = new Vector3(-1.7F, 0, 0);
             this.forward = new Vector3(0, 0, 0.01F);
             this.back = new Vector3(0, 0, -0.01F);
-            this.leftBoundary = -2.5F;
-            this.rightBoundary = 2.5F;
+            this.leftBoundary = -3.8F;
+            this.rightBoundary = 3.8F;
             this.frontBoundary = 0.7F;
             this.backBoundary = -0.5F;
             transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;
             this.startPosition = transform.localPosition;
         }
 
+        /*
+        void Update()
+        {
+            if (Input.GetButtonDown("Button1"))
+            {
+                Debug.Log("Pressed");
+            }
+        }*/
+
         /// Car controlling.
         void FixedUpdate()
         {
-            if (Input.GetKey(KeyCode.A) && (transform.localPosition + left).x > leftBoundary)
+            if (transform.localRotation != Quaternion.identity)
             {
-                transform.Translate(this.left);   
+                transform.localRotation = Quaternion.identity;
             }
-            if (Input.GetKey(KeyCode.D) && (transform.localPosition + right).x < rightBoundary)
+            if ((Input.GetKey(KeyCode.A) || directionX == -1) && (transform.localPosition + left).x > leftBoundary)
             {
-                transform.Translate(this.right);
+                rb.velocity = this.left;
+            //    transform.Translate(this.left);   
             }
-            if (Input.GetKey(KeyCode.W) && (transform.localPosition + forward).z < this.frontBoundary)
+            if ((Input.GetKey(KeyCode.D) || directionX == 1) && (transform.localPosition + right).x < rightBoundary)
+            {
+                rb.velocity = this.right;
+           //     transform.Translate(this.right);
+            }
+            if ((Input.GetKey(KeyCode.W) || directionZ == 1) && (transform.localPosition + forward).z < this.frontBoundary)
             {
                 transform.Translate(this.forward);
             }
-            else if (Input.GetKey(KeyCode.S) && (transform.localPosition + back).z > this.backBoundary)
+            else if ((Input.GetKey(KeyCode.W) || directionZ == -1) && (transform.localPosition + back).z > this.backBoundary)
             {
                 transform.Translate(this.back);
             }
@@ -94,15 +117,22 @@ namespace Traffic
             }
         }
 
+        public void CarMoveX(int InputAxis)
+        {
+            this.directionX = InputAxis;
+        }
+
+        public void CarMoveZ(int InputAxis) => this.directionZ = InputAxis;
+
         /// <summary>
         /// Manages collisions.
         /// </summary>
         /// <param name="collision"></param>
-        private void OnTriggerEnter(Collider other)
+        private void OnCollisionEnter(Collision other)
         {
-            Debug.Log("Damage");
             if (other.gameObject.tag == "Police")
             {
+                Debug.Log("Damage");
                 transform.parent.GetComponent<GameConfig>().Damage();
             }
         }

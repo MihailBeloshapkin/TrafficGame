@@ -27,7 +27,11 @@ namespace Traffic
 
         [SerializeField] private float maxSpeed;
 
+        [SerializeField] private float minSpeed;
+
         [SerializeField] private int health;
+
+        public int accDirection;
 
         /// <summary>
         /// Car start position.
@@ -47,6 +51,7 @@ namespace Traffic
             //    this.carStartPosition = new Vector3(0, 0.2F, -0.9F);
             this.acceleration = false;
             this.backAcceleration = false;
+            this.accDirection = 0;
             this.startSpeed = this.instantSpeed;
             this.maxSpeed = -0.5F;
             this.health = 3;
@@ -54,9 +59,10 @@ namespace Traffic
         }
 
         // Update is called once per frame
-        void FixedUpdate()
+        void Update()
         {
-            this.Acceleration();
+            this.AltAcceleration();
+        //    this.Acceleration();
         }
 
         /// <summary>
@@ -71,12 +77,37 @@ namespace Traffic
             }
         }
 
+        public void AccelerationAxis(int InputAxis)
+        {
+            if (InputAxis == 1)
+            {
+                Debug.Log("Acceleration");
+            }
+            this.accDirection = InputAxis;
+        }
+
+        private void AltAcceleration()
+        {
+            if (this.accDirection == 1 && this.instantSpeed.z > this.maxSpeed)
+            {
+                this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
+            if (this.accDirection == -1 && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.08F) * Time.deltaTime;
+            }
+            if (this.accDirection == 0 && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
+        }
+
         /// <summary>
         /// Manages car acceleration.
         /// </summary>
         private void Acceleration()
         {
-            if (Input.GetKey(KeyCode.W) && !this.acceleration)
+            if ((Input.GetKey(KeyCode.W) && !this.acceleration))
             {
                 this.backAcceleration = false;
                 this.acceleration = true;
