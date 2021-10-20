@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    [SerializeField]
-    private List<GameObject> healthList;
+    [SerializeField] private List<GameObject> healthList;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private int index;
+
+    void Start()
     {
-        
+        this.index = healthList.Count - 1;
+    }
+
+    public void Damage()
+    {
+        healthList[index].SetActive(false);
+        if (index > 0)
+            index--;
     }
 }

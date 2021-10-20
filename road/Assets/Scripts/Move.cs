@@ -115,6 +115,10 @@ namespace Traffic
                 if (transform.localPosition.z < startPosition.z)
                     transform.Translate(forward);
             }
+            if (transform.localPosition.z < Camera.main.transform.position.z)
+            {
+                transform.parent.GetComponent<GameConfig>().Damage();
+            }
         }
 
         public void CarMoveX(int InputAxis)

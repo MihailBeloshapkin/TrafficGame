@@ -73,6 +73,20 @@ namespace Traffic
                     new int[] { 0, 0, 1, 0, 0 },
                     new int[] { 1, 0, 0, 1, 0 },
                     new int[] { 0, 0, 1, 0, 1 }
+                },
+                new int[][]
+                {
+                    new int[] { 1, 0, 0, 0, 1 },
+                    new int[] { 0, 0, 0, 0, 0 },
+                    new int[] { 1, 0, 1, 0, 0 },
+                    new int[] { 0, 0, 0, 0, 1 }
+                },
+                new int[][]
+                {
+                    new int[] { 0, 1, 0, 1, 0 },
+                    new int[] { 1, 0, 0, 0, 0 },
+                    new int[] { 0, 0, 1, 1, 0 },
+                    new int[] { 0, 0, 1, 0, 0 }
                 }
             };
 
@@ -123,6 +137,15 @@ namespace Traffic
                 startZPosition.x = zPositions[0];
                 startZPosition -= new Vector3(0, 0, this.zDistanceBetweenCars);
             }
+        }
+
+        private IEnumerable LineChanger()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(1.0F);
+            }
+
         }
 
         /// <summary>
