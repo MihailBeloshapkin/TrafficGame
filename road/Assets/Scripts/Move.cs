@@ -66,8 +66,8 @@ namespace Traffic
             this.left = new Vector3(-1.7F, 0, 0);
             this.forward = new Vector3(0, 0, 0.01F);
             this.back = new Vector3(0, 0, -0.01F);
-            this.leftBoundary = -3.8F;
-            this.rightBoundary = 3.8F;
+            this.leftBoundary = -4.2F;
+            this.rightBoundary = 4.2F;
             this.frontBoundary = 0.7F;
             this.backBoundary = -0.5F;
             transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;

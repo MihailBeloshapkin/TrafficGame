@@ -32,6 +32,10 @@ namespace Traffic
 
         [SerializeField] private float distance = 1000000.0F;
 
+        [SerializeField] private List<int> leftLine;
+
+        [SerializeField] private List<int> rightLine;
+
         /// <summary>
         /// Start configuration.
         /// </summary>
@@ -90,8 +94,8 @@ namespace Traffic
                 }
             };
 
-            int sampleIndex = UnityEngine.Random.Range(0, this.sampleMatrixes.Count);
-            this.GenerateSample(sampleIndex);
+//            int sampleIndex = UnityEngine.Random.Range(0, this.sampleMatrixes.Count);
+//            this.GenerateSample(sampleIndex);
         }
 
         /// <summary>
@@ -114,7 +118,7 @@ namespace Traffic
         /// <summary>
         /// Generates sample from sample matrix.
         /// </summary>
-        private void GenerateSample(int index)
+        private void GenerateSample(int index) 
         {
             Vector3 startZPosition = new Vector3(zPositions[0], 0.2F, 70);
             int[][] sampleMatrix = this.sampleMatrixes[index];

@@ -7,54 +7,73 @@ using UnityEngine;
 /// </summary>
 public class PauseScript : MonoBehaviour
 {
-    [SerializeField] private float timer;
-    
-    [SerializeField]  private bool isPaused;
-    
-    [SerializeField]  private bool guiPause;
+    [SerializeField] private State state;
 
-    public void Update()
+    [SerializeField] private GameObject inter;
+
+    [SerializeField] private GameObject generator;
+
+    /// <summary>
+    ///  States of the game.
+    /// </summary>
+    public enum State
     {
-        Time.timeScale = timer;
-        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused)
-        {
-            isPaused = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
-        {
-            isPaused = false;
-        }
-        if (isPaused == true)
-        {
-            timer = 0;
-            guiPause = true;
-
-        }
-        else if (isPaused == false)
-        {
-            timer = 1f;
-            guiPause = false;
-        }
+        Start,
+        Playing,
+        Pause, 
+        Finish
     }
 
+    public void Start()
+    {
+        this.state = State.Start;
+        inter.SetActive(false);
+        generator.SetActive(false);
+    }
+
+    public void Finish() => this.state = State.Finish;
+
+    /// <summary>
+    /// Manages basic interface.
+    /// </summary>
     public void OnGUI()
     {
         Cursor.visible = true;
-        if (!guiPause)
+        if (state == State.Playing)
         {
             if (GUI.Button(new Rect((float)(Screen.width) - 100f, 0, 100f, 40f), "Pause"))
             {
-                isPaused = true;
-                timer = 1;
+                state = State.Pause;
+                Time.timeScale = 0;
+                inter.SetActive(false);
             }
         }
-        if (guiPause == true)
+        if (state == State.Start)
         {
-        //    Cursor.visible = true;// включаем отображение курсора
+            if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Start"))
+            {
+                state = State.Playing;
+                inter.SetActive(true);
+                generator.SetActive(true);
+            }
+        }
+        if (state == State.Pause)
+        {
             if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Continue"))
             {
-                isPaused = false;
-                timer = 0;
+                state = State.Playing;
+                Time.timeScale = 1;
+                inter.SetActive(true);
+            }
+        }
+        if (state == State.Finish)
+        {
+            Time.timeScale = 0;
+            if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Restart"))
+            {
+                state = State.Playing;
+                Time.timeScale = 1;
+                inter.SetActive(true);
             }
         }
     }

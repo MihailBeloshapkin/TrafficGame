@@ -33,6 +33,8 @@ namespace Traffic
 
         [SerializeField] private GameObject healthManager;
 
+        [SerializeField] private GameObject StartAndPause;
+
         public int accDirection;
 
         /// <summary>
@@ -139,6 +141,12 @@ namespace Traffic
 
         public void Damage()
         {
+            this.healthManager.GetComponent<HealthManager>().Damage();
+            if (health == 1)
+            {
+                this.StartAndPause.GetComponent<PauseScript>().Finish();
+            }
+            this.health--;
             this.healthManager.GetComponent<HealthManager>().Damage();
         }
     }
