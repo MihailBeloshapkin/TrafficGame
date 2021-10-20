@@ -188,5 +188,17 @@ namespace Traffic
                 this.GenerateSample(sampleIndex);
             }
         }
+
+        /// <summary>
+        /// If game finished.
+        /// </summary>
+        public void Restart()
+        {
+            foreach (var obj in this.currentObjects)
+            {
+                Destroy(obj);
+            }
+            currentObjects = new List<GameObject>();
+        }
     }
 }

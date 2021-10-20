@@ -60,8 +60,6 @@ namespace Traffic
             this.rb = GetComponent<Rigidbody>();
             directionX = 0;
             directionZ = 0;
-
-
             this.right = new Vector3(1.7F, 0, 0);
             this.left = new Vector3(-1.7F, 0, 0);
             this.forward = new Vector3(0, 0, 0.01F);
@@ -74,15 +72,6 @@ namespace Traffic
             this.startPosition = transform.localPosition;
         }
 
-        /*
-        void Update()
-        {
-            if (Input.GetButtonDown("Button1"))
-            {
-                Debug.Log("Pressed");
-            }
-        }*/
-
         /// Car controlling.
         void FixedUpdate()
         {
@@ -93,12 +82,10 @@ namespace Traffic
             if ((Input.GetKey(KeyCode.A) || directionX == -1) && (transform.localPosition + left).x > leftBoundary)
             {
                 rb.velocity = this.left;
-            //    transform.Translate(this.left);   
             }
             if ((Input.GetKey(KeyCode.D) || directionX == 1) && (transform.localPosition + right).x < rightBoundary)
             {
                 rb.velocity = this.right;
-           //     transform.Translate(this.right);
             }
             if ((Input.GetKey(KeyCode.W) || directionZ == 1) && (transform.localPosition + forward).z < this.frontBoundary)
             {
@@ -117,16 +104,15 @@ namespace Traffic
             }
             if (transform.localPosition.z < Camera.main.transform.position.z)
             {
-                transform.parent.GetComponent<GameConfig>().Damage();
+                transform.parent.GetComponent<GameConfig>().Damage(10);
             }
         }
 
         public void CarMoveX(int InputAxis)
-        {
-            this.directionX = InputAxis;
-        }
-
-        public void CarMoveZ(int InputAxis) => this.directionZ = InputAxis;
+            => this.directionX = InputAxis;
+        
+        public void CarMoveZ(int InputAxis) 
+            => this.directionZ = InputAxis;
 
         /// <summary>
         /// Manages collisions.
@@ -136,8 +122,7 @@ namespace Traffic
         {
             if (other.gameObject.tag == "Police")
             {
-                Debug.Log("Damage");
-                transform.parent.GetComponent<GameConfig>().Damage();
+                transform.parent.GetComponent<GameConfig>().Damage(1);
             }
         }
     }

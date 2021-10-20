@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace Traffic
 {
-    [AddComponentMenu("Game Config")]
+    /// <summary>
+    /// Current game state.
+    /// </summary>
     public class GameConfig : MonoBehaviour
     {
         // Current speed.
@@ -42,12 +44,13 @@ namespace Traffic
         /// </summary>
         public Vector3 CarStartPosition { get => this.carStartPosition; }
 
-        public Vector3 Speed { get => this.speed; }
-
+       
         /// <summary>
         /// INstant speed value.
         /// </summary>
         public Vector3 InstantSpeed { get => this.instantSpeed; }
+
+        public int Health { get => this.health; set => this.health = 4; }
 
         // Start is called before the first frame update
         void Start()
@@ -58,15 +61,16 @@ namespace Traffic
             this.accDirection = 0;
             this.startSpeed = this.instantSpeed;
             this.maxSpeed = -0.5F;
-            this.health = 3;
+            this.health = 4;
             //    StartCoroutine(SpeedCoroutine());
         }
 
-        // Update is called once per frame
+        // Update is called once per frame.
         void Update()
         {
+            if (this.health == 0)
+                health = 4;
             this.AltAcceleration();
-        //    this.Acceleration();
         }
 
         /// <summary>
@@ -81,15 +85,15 @@ namespace Traffic
             }
         }
 
+        /// <summary>
+        /// Gets acceleration direction. 
+        /// </summary>
         public void AccelerationAxis(int InputAxis)
-        {
-            if (InputAxis == 1)
-            {
-                Debug.Log("Acceleration");
-            }
-            this.accDirection = InputAxis;
-        }
-
+            => this.accDirection = InputAxis;
+        
+        /// <summary>
+        /// Acceleration controlled with buttons.
+        /// </summary>
         private void AltAcceleration()
         {
             if (this.accDirection == 1 && this.instantSpeed.z > this.maxSpeed)
@@ -139,15 +143,19 @@ namespace Traffic
             }
         }
 
-        public void Damage()
+        /// <summary>
+        /// Manages damage.
+        /// </summary>
+        public void Damage(int damage)
         {
-            this.healthManager.GetComponent<HealthManager>().Damage();
-            if (health == 1)
+            this.health--;
+            this.healthManager.GetComponent<HealthManager>().Damage(1);
+            if (health == 0)
             {
                 this.StartAndPause.GetComponent<PauseScript>().Finish();
+                this.instantSpeed = this.startSpeed;
+                this.healthManager.GetComponent<HealthManager>().Damage(-4);
             }
-            this.health--;
-            this.healthManager.GetComponent<HealthManager>().Damage();
         }
     }
 }
