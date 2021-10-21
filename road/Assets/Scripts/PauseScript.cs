@@ -15,6 +15,8 @@ namespace Traffic
 
         [SerializeField] private GameObject generator;
 
+        [SerializeField] private GameObject move;
+
         /// <summary>
         ///  States of the game.
         /// </summary>
@@ -79,6 +81,7 @@ namespace Traffic
                     Time.timeScale = 1;
                     inter.SetActive(true);
                     generator.GetComponent<Generator>().Restart();
+                    move.GetComponent<Move>().Restart();
                 }
                 if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Exit"))
                 {

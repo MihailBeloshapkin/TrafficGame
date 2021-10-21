@@ -125,5 +125,10 @@ namespace Traffic
                 transform.parent.GetComponent<GameConfig>().Damage(1);
             }
         }
+
+        public void Restart()
+        {
+            transform.localPosition = transform.parent.GetComponent<GameConfig>().CarStartPosition;
+        }
     }
 }
