@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace Traffic
 {
-    [AddComponentMenu("Game Config")]
+    /// <summary>
+    /// Current game state.
+    /// </summary>
     public class GameConfig : MonoBehaviour
     {
         // Current speed.
@@ -27,19 +29,28 @@ namespace Traffic
 
         [SerializeField] private float maxSpeed;
 
+        [SerializeField] private float minSpeed;
+
         [SerializeField] private int health;
+
+        [SerializeField] private GameObject healthManager;
+
+        [SerializeField] private GameObject StartAndPause;
+
+        public int accDirection;
 
         /// <summary>
         /// Car start position.
         /// </summary>
         public Vector3 CarStartPosition { get => this.carStartPosition; }
 
-        public Vector3 Speed { get => this.speed; }
-
+       
         /// <summary>
         /// INstant speed value.
         /// </summary>
         public Vector3 InstantSpeed { get => this.instantSpeed; }
+
+        public int Health { get => this.health; set => this.health = 4; }
 
         // Start is called before the first frame update
         void Start()
@@ -47,16 +58,19 @@ namespace Traffic
             //    this.carStartPosition = new Vector3(0, 0.2F, -0.9F);
             this.acceleration = false;
             this.backAcceleration = false;
+            this.accDirection = 0;
             this.startSpeed = this.instantSpeed;
             this.maxSpeed = -0.5F;
-            this.health = 3;
+            this.health = 4;
             //    StartCoroutine(SpeedCoroutine());
         }
 
-        // Update is called once per frame
-        void FixedUpdate()
+        // Update is called once per frame.
+        void Update()
         {
-            this.Acceleration();
+            if (this.health == 0)
+                health = 4;
+            this.AltAcceleration();
         }
 
         /// <summary>
@@ -72,11 +86,36 @@ namespace Traffic
         }
 
         /// <summary>
+        /// Gets acceleration direction. 
+        /// </summary>
+        public void AccelerationAxis(int InputAxis)
+            => this.accDirection = InputAxis;
+        
+        /// <summary>
+        /// Acceleration controlled with buttons.
+        /// </summary>
+        private void AltAcceleration()
+        {
+            if (this.accDirection == 1 && this.instantSpeed.z > this.maxSpeed)
+            {
+                this.instantSpeed -= new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
+            if (this.accDirection == -1 && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.08F) * Time.deltaTime;
+            }
+            if (this.accDirection == 0 && instantSpeed.z < this.startSpeed.z)
+            {
+                this.instantSpeed += new Vector3(0, 0, 0.02F) * Time.deltaTime;
+            }
+        }
+
+        /// <summary>
         /// Manages car acceleration.
         /// </summary>
         private void Acceleration()
         {
-            if (Input.GetKey(KeyCode.W) && !this.acceleration)
+            if ((Input.GetKey(KeyCode.W) && !this.acceleration))
             {
                 this.backAcceleration = false;
                 this.acceleration = true;
@@ -104,9 +143,19 @@ namespace Traffic
             }
         }
 
-        public void Damage()
+        /// <summary>
+        /// Manages damage.
+        /// </summary>
+        public void Damage(int damage)
         {
-            Debug.Log("Damage!");
+            this.health--;
+            this.healthManager.GetComponent<HealthManager>().Damage(1);
+            if (health == 0)
+            {
+                this.StartAndPause.GetComponent<PauseScript>().Finish();
+                this.instantSpeed = this.startSpeed;
+                this.healthManager.GetComponent<HealthManager>().Damage(-4);
+            }
         }
     }
 }

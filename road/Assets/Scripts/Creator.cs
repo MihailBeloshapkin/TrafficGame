@@ -8,7 +8,7 @@ namespace Traffic
     /// <summary>
     /// Manages objects creation.
     /// </summary>
-    public abstract class Creator : MonoBehaviour
+    public abstract class Creator : ScriptableObject
     {
         /// <summary>
         /// Creates onRoadObject. 

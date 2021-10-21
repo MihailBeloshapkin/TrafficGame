@@ -2,59 +2,94 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Manages pause state.
-/// </summary>
-public class PauseScript : MonoBehaviour
+namespace Traffic
 {
-    [SerializeField] private float timer;
-    
-    [SerializeField]  private bool isPaused;
-    
-    [SerializeField]  private bool guiPause;
-
-    public void Update()
+    /// <summary>
+    /// Manages pause state.
+    /// </summary>
+    public class PauseScript : MonoBehaviour
     {
-        Time.timeScale = timer;
-        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused)
-        {
-            isPaused = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
-        {
-            isPaused = false;
-        }
-        if (isPaused == true)
-        {
-            timer = 0;
-            guiPause = true;
+        [SerializeField] private State state;
 
-        }
-        else if (isPaused == false)
-        {
-            timer = 1f;
-            guiPause = false;
-        }
-    }
+        [SerializeField] private GameObject inter;
 
-    public void OnGUI()
-    {
-        Cursor.visible = true;
-        if (!guiPause)
+        [SerializeField] private GameObject generator;
+
+        [SerializeField] private GameObject move;
+
+        /// <summary>
+        ///  States of the game.
+        /// </summary>
+        public enum State
         {
-            if (GUI.Button(new Rect((float)(Screen.width) - 100f, 0, 100f, 40f), "Pause"))
+            Start,
+            Playing,
+            Pause,
+            Finish
+        }
+
+        public void Start()
+        {
+            this.state = State.Start;
+            inter.SetActive(false);
+            generator.SetActive(false);
+        }
+
+        public void Finish() => this.state = State.Finish;
+
+        /// <summary>
+        /// Manages basic interface.
+        /// </summary>
+        public void OnGUI()
+        {
+            Cursor.visible = true;
+            if (state == State.Playing)
             {
-                isPaused = true;
-                timer = 1;
+                if (GUI.Button(new Rect((float)(Screen.width) - 120f, 20f, 100f, 40f), "Pause"))
+                {
+                    state = State.Pause;
+                    Time.timeScale = 0;
+                    inter.SetActive(false);
+                }
             }
-        }
-        if (guiPause == true)
-        {
-        //    Cursor.visible = true;// включаем отображение курсора
-            if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Continue"))
+            if (state == State.Start)
             {
-                isPaused = false;
-                timer = 0;
+                if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Start"))
+                {
+                    state = State.Playing;
+                    inter.SetActive(true);
+                    generator.SetActive(true);
+                }
+            }
+            if (state == State.Pause)
+            {
+                if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Continue"))
+                {
+                    state = State.Playing;
+                    Time.timeScale = 1;
+                    inter.SetActive(true);
+                }
+            }
+            if (state == State.Finish)
+            {
+                Time.timeScale = 0;
+                inter.SetActive(false);
+
+                if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 80f, 140f, 40f), "Restart"))
+                {
+                    state = State.Playing;
+                    Time.timeScale = 1;
+                    inter.SetActive(true);
+                    generator.GetComponent<Generator>().Restart();
+                    move.GetComponent<Move>().Restart();
+                }
+                if (GUI.Button(new Rect((float)(Screen.width / 2) - 70f, (float)(Screen.height / 2) - 20f, 140f, 40f), "Exit"))
+                {
+                    state = State.Playing;
+                    Time.timeScale = 1;
+                    inter.SetActive(true);
+                    generator.GetComponent<Generator>().Restart();
+                }
             }
         }
     }
